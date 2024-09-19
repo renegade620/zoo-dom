@@ -39,7 +39,7 @@ class Visitor(Base):
     name = Column(String())
     visit_date = Column(Date)
 
-class Vete(Base):
+class Vet(Base):
    __tablename__ = "vets"
    id = Column(Integer(), primary_key=True)
    name = Column(String())

@@ -34,7 +34,7 @@ begin:
 
 ***
 
-## Where Do I Start?
+## Where Do I Stopc?
 
 This project will likely be one of the biggest projects you've undertaken so
 far. Your first task should be creating a Git repository to keep track of your

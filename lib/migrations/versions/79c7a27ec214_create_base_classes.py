@@ -1,8 +1,8 @@
-"""create Enclosure instances
+"""create base classes
 
-Revision ID: 9627a0d4898e
-Revises: a0ec22a78b75
-Create Date: 2024-09-19 21:41:33.263851
+Revision ID: 79c7a27ec214
+Revises: 
+Create Date: 2024-09-22 08:42:29.882463
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9627a0d4898e'
-down_revision: Union[str, None] = 'a0ec22a78b75'
+revision: str = '79c7a27ec214'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

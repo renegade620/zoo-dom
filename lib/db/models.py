@@ -21,12 +21,12 @@ visitor_animal = Table (
     Column('animal_id', Integer, ForeignKey('animals.id'))
 )
 
-vet_animal = Table (
-    'vet_animal',
-    Base.metadata,
-    Column('vet_id', Integer, ForeignKey('vets.id')),
-    Column('animal_id', Integer, ForeignKey('animals.id'))
-)
+# vet_animal = Table (
+#     'vet_animal',
+#     Base.metadata,
+#     Column('vet_id', Integer, ForeignKey('vets.id')),
+#     Column('animal_id', Integer, ForeignKey('animals.id'))
+# )
 
 # main tables
 class Animal(Base):
@@ -42,7 +42,7 @@ class Animal(Base):
     enclosure = relationship("Enclosure", backref=backref("animals"))
     staff = relationship("Staff", secondary=staff_animal, backref="animals")
     visitors = relationship("Visitor", secondary=visitor_animal, backref="animals")
-    vets = relationship("Vet", secondary=vet_animal, backref="animals")
+    # vets = relationship("Vet", secondary=vet_animal, backref="animals")
 
 class Enclosure(Base):
     __tablename__ = "enclosures"
@@ -58,6 +58,8 @@ class Staff(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     role = Column(String())
+    species_specialization = Column(String(), nullable=True) # for vets
+
 
 class Visitor(Base):
     __tablename__ = "visitors"
@@ -66,11 +68,12 @@ class Visitor(Base):
     name = Column(String())
     visit_date = Column(Date)
 
-class Vet (Base):
-   __tablename__ = "vets"
-   id = Column(Integer(), primary_key=True)
-   name = Column(String())
-   species_specialization = Column(String())
+# redundant
+# class Vet (Base):
+#    __tablename__ = "vets"
+#    id = Column(Integer(), primary_key=True)
+#    name = Column(String())
+   
 
 
 engine = create_engine("sqlite:///zoo.db")

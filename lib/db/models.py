@@ -1,12 +1,34 @@
 # imports
 from sqlalchemy import Date, create_engine
-from sqlalchemy import ForeignKey, Column, Integer, String
+from sqlalchemy import ForeignKey, Column, Integer, String, Table
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-# tables
+# joint tables
+staff_animal = Table (
+    'staff_animal',
+    Base.metadata,
+    Column('staff_id', Integer, ForeignKey('staff.id')),
+    Column('animal_id', Integer, ForeignKey('animals.id'))
+)
+
+visitor_animal = Table (
+    'visitor_animal',
+    Base.metadata,
+    Column('visitor_id', Integer, ForeignKey('visitors.id')),
+    Column('animal_id', Integer, ForeignKey('animals.id'))
+)
+
+vet_animal = Table (
+    'vet_animal',
+    Base.metadata,
+    Column('vet_id', Integer, ForeignKey('vets.id')),
+    Column('animal_id', Integer, ForeignKey('animals.id'))
+)
+
+# main tables
 class Animal(Base):
     __tablename__ = "animals"
 
@@ -15,7 +37,12 @@ class Animal(Base):
     species = Column(String())
     age = Column(Integer())
     enclosure_id = Column(Integer(), ForeignKey("enclosures.id")) # Foreign Key
-    enclosure = relationship("Enclosure", backref="animals") # One to Many Relationship
+
+    # Relationships
+    enclosure = relationship("Enclosure", backref=backref("animals"))
+    staff = relationship("Staff", secondary=staff_animal, backref="animals")
+    visitors = relationship("Visitor", secondary=visitor_animal, backref="animals")
+    vets = relationship("Vet", secondary=vet_animal, backref="animals")
 
 class Enclosure(Base):
     __tablename__ = "enclosures"
@@ -26,7 +53,7 @@ class Enclosure(Base):
     
 
 class Staff(Base):
-    __tablename__ = "staffs"
+    __tablename__ = "staff"
 
     id = Column(Integer(), primary_key=True)
     name = Column(String())
@@ -39,7 +66,7 @@ class Visitor(Base):
     name = Column(String())
     visit_date = Column(Date)
 
-class Vet(Base):
+class Vet (Base):
    __tablename__ = "vets"
    id = Column(Integer(), primary_key=True)
    name = Column(String())

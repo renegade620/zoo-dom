@@ -44,12 +44,63 @@ class Animal(Base):
     visitors = relationship("Visitor", secondary=visitor_animal, backref="animals")
     # vets = relationship("Vet", secondary=vet_animal, backref="animals")
 
+    @property
+    def adult_or_child(self):
+        return "Child" if self.age < 2 else "Adult"
+    
+    @classmethod
+    def get_all(cls, session):
+        return session.query(cls).all()
+    
+    @classmethod
+    def delete(cls, session, id):
+        animal = cls.find_by_id(session, id)
+        if animal:
+            session.delete(animal)
+            session.commit()
+            return "Animal Deleted Successfully"
+        return "Animal does not exist!"
+    
+    @classmethod
+    def find_by_id(cls, session, id):
+        return session.query(cls).filter_by(id=id).first()
+
 class Enclosure(Base):
     __tablename__ = "enclosures"
 
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     capacity = Column(Integer())
+
+    @property
+    def space_available(self):
+        return self.capacity - len(self.animals)
+    
+    @classmethod
+    def create(cls, session, name, capacity):
+        enclosure = cls(name=name, capacity=capacity)
+        session.add(enclosure)
+        session.commit()
+        return enclosure
+    
+    @classmethod
+    def get_all(cls, session):
+        return session.query(cls).all()
+    
+    @classmethod
+    def delete(cls, session, id):
+        enclosure = cls.find_by_id(session, id)
+        if enclosure:
+            session.delete(enclosure)
+            session.commit()
+            return "Enclosure Deleted Successfully"
+        return "Enclosure does not exist!"
+    
+    @classmethod
+    def find_by_id(cls, session, id):
+        return session.query(cls).filter_by_id(id=id).first()
+    
+
     
 
 class Staff(Base):
@@ -60,6 +111,32 @@ class Staff(Base):
     role = Column(String())
     species_specialization = Column(String(), nullable=True) # for vets
 
+    @classmethod
+    def create(cls, session, name, role):
+        staff = cls(name=name, role=role)
+        session.add(staff)
+        session.commit()
+        return staff
+    
+    @classmethod
+    def get_all(cls, session):
+        return session.query(cls).all()
+    
+    @classmethod
+    def delete(cls, session, id):
+        staff = cls.find_by_id(session, id)
+        if staff:
+            session.delete(staff)
+            session.commit()
+            return "Staff Deleted Successfully"
+        return "Staff does not exist!"
+    
+    @classmethod
+    def find_by_id(cls, session, id):
+        return session.query(cls).filter_by_id(id=id).first()
+
+
+
 
 class Visitor(Base):
     __tablename__ = "visitors"
@@ -67,6 +144,31 @@ class Visitor(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     visit_date = Column(Date)
+
+    @classmethod
+    def create(cls, session, name, visit_date):
+        visitor = cls(name=name, visit_date=visit_date)
+        session.add(visitor)
+        session.commit()
+        return visitor
+    
+    @classmethod
+    def get_all(cls, session):
+        return session.query(cls).all()
+    
+    @classmethod
+    def delete(cls, session, id):
+        visitor= cls.find_by_id(session, id)
+        if visitor:
+            session.delete(visitor)
+            session.commit()
+            return "Visitor Deleted Successfully"
+        return "Visitor does not exist!"
+    
+    @classmethod
+    def find_by_id(cls, session, id):
+        return session.query(cls).filter_by_id(id=id).first()
+
 
 # redundant
 # class Vet (Base):

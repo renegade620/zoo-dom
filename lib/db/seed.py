@@ -1,10 +1,10 @@
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.orm import sessionmaker
 from faker import Faker
-from models import Animal, Enclosure, Staff, Visitor, engine
+from models import Session, Animal, Enclosure, Staff, Visitor
 
 import random
 
-Session = sessionmaker(bind=engine)
+# Session = sessionmaker(bind=engine)
 session = Session()
 
 # init Faker

@@ -1,24 +1,26 @@
 # imports
 from sqlalchemy import Date, create_engine
 from sqlalchemy import ForeignKey, Column, Integer, String, Table
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+engine = create_engine("sqlite:///zoo.db")
+Session = sessionmaker(bind=engine)
 
 # joint tables
-staff_animal = Table (
-    'staff_animal',
+staff_animal = Table(
+    "staff_animal",
     Base.metadata,
-    Column('staff_id', Integer, ForeignKey('staff.id')),
-    Column('animal_id', Integer, ForeignKey('animals.id'))
+    Column("staff_id", Integer, ForeignKey("staff.id")),
+    Column("animal_id", Integer, ForeignKey("animals.id")),
 )
 
-visitor_animal = Table (
-    'visitor_animal',
+visitor_animal = Table(
+    "visitor_animal",
     Base.metadata,
-    Column('visitor_id', Integer, ForeignKey('visitors.id')),
-    Column('animal_id', Integer, ForeignKey('animals.id'))
+    Column("visitor_id", Integer, ForeignKey("visitors.id")),
+    Column("animal_id", Integer, ForeignKey("animals.id")),
 )
 
 # vet_animal = Table (
@@ -28,6 +30,7 @@ visitor_animal = Table (
 #     Column('animal_id', Integer, ForeignKey('animals.id'))
 # )
 
+
 # main tables
 class Animal(Base):
     __tablename__ = "animals"
@@ -36,7 +39,7 @@ class Animal(Base):
     name = Column(String())
     species = Column(String())
     age = Column(Integer())
-    enclosure_id = Column(Integer(), ForeignKey("enclosures.id")) # Foreign Key
+    enclosure_id = Column(Integer(), ForeignKey("enclosures.id"))  # Foreign Key
 
     # Relationships
     enclosure = relationship("Enclosure", backref=backref("animals"))
@@ -44,14 +47,17 @@ class Animal(Base):
     visitors = relationship("Visitor", secondary=visitor_animal, backref="animals")
     # vets = relationship("Vet", secondary=vet_animal, backref="animals")
 
+    def __repr__(self):
+        return f"Animal(id={self.id}, name='{self.name}', species='{self.species}', age={self.age}, enclosure='{self.enclosure.name if self.enclosure else 'None'}')"
+
     @property
     def adult_or_child(self):
         return "Child" if self.age < 2 else "Adult"
-    
+
     @classmethod
     def get_all(cls, session):
         return session.query(cls).all()
-    
+
     @classmethod
     def delete(cls, session, id):
         animal = cls.find_by_id(session, id)
@@ -60,10 +66,11 @@ class Animal(Base):
             session.commit()
             return "Animal Deleted Successfully"
         return "Animal does not exist!"
-    
+
     @classmethod
     def find_by_id(cls, session, id):
         return session.query(cls).filter_by(id=id).first()
+
 
 class Enclosure(Base):
     __tablename__ = "enclosures"
@@ -72,21 +79,24 @@ class Enclosure(Base):
     name = Column(String())
     capacity = Column(Integer())
 
+    def __repr__(self):
+        return f"Enclosure(id={self.id}, name='{self.name}', capacity={self.capacity})"
+
     @property
     def space_available(self):
         return self.capacity - len(self.animals)
-    
+
     @classmethod
     def create(cls, session, name, capacity):
         enclosure = cls(name=name, capacity=capacity)
         session.add(enclosure)
         session.commit()
         return enclosure
-    
+
     @classmethod
     def get_all(cls, session):
         return session.query(cls).all()
-    
+
     @classmethod
     def delete(cls, session, id):
         enclosure = cls.find_by_id(session, id)
@@ -95,13 +105,11 @@ class Enclosure(Base):
             session.commit()
             return "Enclosure Deleted Successfully"
         return "Enclosure does not exist!"
-    
+
     @classmethod
     def find_by_id(cls, session, id):
         return session.query(cls).filter_by_id(id=id).first()
-    
 
-    
 
 class Staff(Base):
     __tablename__ = "staff"
@@ -109,7 +117,7 @@ class Staff(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     role = Column(String())
-    species_specialization = Column(String(), nullable=True) # for vets
+    species_specialization = Column(String(), nullable=True)  # for vets
 
     @classmethod
     def create(cls, session, name, role):
@@ -117,11 +125,11 @@ class Staff(Base):
         session.add(staff)
         session.commit()
         return staff
-    
+
     @classmethod
     def get_all(cls, session):
         return session.query(cls).all()
-    
+
     @classmethod
     def delete(cls, session, id):
         staff = cls.find_by_id(session, id)
@@ -130,12 +138,10 @@ class Staff(Base):
             session.commit()
             return "Staff Deleted Successfully"
         return "Staff does not exist!"
-    
+
     @classmethod
     def find_by_id(cls, session, id):
         return session.query(cls).filter_by_id(id=id).first()
-
-
 
 
 class Visitor(Base):
@@ -151,20 +157,20 @@ class Visitor(Base):
         session.add(visitor)
         session.commit()
         return visitor
-    
+
     @classmethod
     def get_all(cls, session):
         return session.query(cls).all()
-    
+
     @classmethod
     def delete(cls, session, id):
-        visitor= cls.find_by_id(session, id)
+        visitor = cls.find_by_id(session, id)
         if visitor:
             session.delete(visitor)
             session.commit()
             return "Visitor Deleted Successfully"
         return "Visitor does not exist!"
-    
+
     @classmethod
     def find_by_id(cls, session, id):
         return session.query(cls).filter_by_id(id=id).first()
@@ -175,8 +181,6 @@ class Visitor(Base):
 #    __tablename__ = "vets"
 #    id = Column(Integer(), primary_key=True)
 #    name = Column(String())
-   
 
 
-engine = create_engine("sqlite:///zoo.db")
 Base.metadata.create_all(engine)

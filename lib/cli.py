@@ -54,7 +54,7 @@ def crud_funcs(model_class, name):
                     for animal in inst.animals:
                         click.echo(str(animal))
                 elif hasattr(inst, "enclosures"):
-                    click.echo(f"Enclosure: {inst.enclosure}")
+                    click.echo(f"Enclosure: {inst.enclosures}")
                 elif hasattr(inst, "staff"):
                     click.echo("Reated Staff")
                     for staff in inst.staff:

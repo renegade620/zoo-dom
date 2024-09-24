@@ -108,7 +108,7 @@ class Enclosure(Base):
 
     @classmethod
     def find_by_id(cls, session, id):
-        return session.query(cls).filter_by_id(id=id).first()
+        return session.query(cls).filter_by(id=id).first()
 
 
 class Staff(Base):

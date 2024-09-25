@@ -117,7 +117,10 @@ class Staff(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     role = Column(String())
-    species_specialization = Column(String(), nullable=True)  # for vets
+    species_specialization = Column(String(), nullable=True)  # for vets only
+
+    def __repr__(self):
+        return f"Staff(id={self.id}, name='{self.name}', role={self.role}, species_specialization={self.species_specialization})"
 
     @classmethod
     def create(cls, session, name, role):
@@ -150,6 +153,9 @@ class Visitor(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(String())
     visit_date = Column(Date)
+
+    def __repr__(self):
+        return f"Visitor(id={self.id}, name='{self.name}', visit_date={self.visit_date})"
 
     @classmethod
     def create(cls, session, name, visit_date):

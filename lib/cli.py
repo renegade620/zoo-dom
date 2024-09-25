@@ -92,8 +92,8 @@ def create_staff():
     click.echo(f"Staff {staff} has been created!")
 
 def create_visitor():
-    name = click.prompt("Enter visitor name")
-    visit_date = click.prompt("Enter visit date (YYYY-MM-DD)")
+    name = click.prompt("Enter visitor name", type=str)
+    visit_date = click.prompt("Enter visit date (YYYY-MM-DD)", type=str)
     try:
         visit_date = datetime.strptime(visit_date, "%Y-%m-%d").date()
         visitor = Visitor.create(session, name, visit_date)

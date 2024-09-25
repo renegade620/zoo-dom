@@ -53,6 +53,13 @@ class Animal(Base):
     @property
     def adult_or_child(self):
         return "Child" if self.age < 2 else "Adult"
+    
+    @classmethod
+    def create(cls, session, name, species, age, enclosure_id):
+        animal = cls(name=name, species=species, age=age, enclosure_id=enclosure_id)
+        session.add(animal)
+        session.commit()
+        return animal
 
     @classmethod
     def get_all(cls, session):
@@ -144,7 +151,7 @@ class Staff(Base):
 
     @classmethod
     def find_by_id(cls, session, id):
-        return session.query(cls).filter_by_id(id=id).first()
+        return session.query(cls).filter_by(id=id).first()
 
 
 class Visitor(Base):
@@ -179,7 +186,7 @@ class Visitor(Base):
 
     @classmethod
     def find_by_id(cls, session, id):
-        return session.query(cls).filter_by_id(id=id).first()
+        return session.query(cls).filter_by(id=id).first()
 
 
 # redundant
